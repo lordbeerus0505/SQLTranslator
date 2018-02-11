@@ -5,6 +5,78 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class WhereClause {
+	HashMap <String,int[]> dist=new HashMap<String, int[]>();
+	ArrayList<String> list=new ArrayList<String>();
+	int distance[]=new int[20];//Assuming a maximum of 20 words
+
+	public String nesting(String sentence,String key) throws IOException {
+		//Key is holding the value of clause X in WHERE X IN()
+		String result="";
+		boolean context=false;
+		Select s=new Select(sentence);
+		result=s.finalstring;
+		Count s1=new Count(sentence,context);
+		result+=" "+s1.finalstring;//+"h2";
+		context=s1.context;
+		/*Minmax s3=new Minmax(cleaned2,columnnameslist);
+		res+=" "+s3.finalstring;//+"h3";*/
+		//context=s3.context;
+		Sum s4=new Sum(sentence,context);
+		result+=" "+s4.finalstring;//+"h4";
+		context=s4.context;
+           /* From s5=new From(sentence);
+            res+=" "+s5.finalstring;
+//System.out.println(cleaned2+"cleaned");
+
+            OrderByClause s6=new OrderByClause(cleaned2,columnnameslist);
+            res+=" "+s6.finalstring;*/
+		Average s5=new Average(sentence,context);
+		result+=" "+s5.finalstring;
+		From s6=new From(sentence);
+		result+=" "+s6.finalstring;
+		/*OrderByClause s7=new OrderByClause(cleaned2,columnnameslist);
+		res+=" "+s7.finalstring;*/
+		WhereClause s8=new WhereClause(sentence);
+		result+=" "+s8.finalstring;
+		return key+" IN "+"("+result+")";
+
+
+	}
+
+	public void Distance(String s)
+	{	int i=0;int k=0,loc,j=0;//K holds index of distance array.I holds the index of each word
+		for(String t:s.split(" "))
+		{k=0;j=0;//resetting both to nil
+			if(t.contains("c_"))
+			{
+				if(!list.contains(t))//Isnt already present
+				{list.add(t.toLowerCase());loc=i;//Storing location of the column_name
+					System.out.println("column @"+loc);
+					for(String u:s.split(" "))
+					{
+						if(!u.contains("c_"))
+						{
+							distance[k++]=Math.abs(loc-j);
+						}
+						j++;
+					}
+					dist.put(t,distance);
+				}//Have found distance of all from that point
+				int count=0;
+				for(int x:distance)
+				{
+					System.out.println(count +":" +x);
+					count++;
+
+				}
+
+			}i++;
+
+		}
+
+
+	}
+
 	public String finalstring;
 	//colname->[condition]
 	//condition->[data]
@@ -226,8 +298,11 @@ public class WhereClause {
 		String s=sentence;//"select all customers where salary greater than 4500";
 		String s1=stmntgenerator(s);
 		System.out.println(s1);
-
+		System.out.println("\n\n\nThe distances are as follows \n");
+		Distance(s);
 		this.finalstring=s1;
+
+
 
 
 	}
