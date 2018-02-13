@@ -44,13 +44,15 @@ public class WhereClause {
 	}
 
 	public void Distance(String s)
-	{	int i=0;int k=0,loc,j=0;//K holds index of distance array.I holds the index of each word
+	{
+		int i=0;int k=0,loc,j=0;//K holds index of distance array.I holds the index of each word
 		for(String t:s.split(" "))
 		{k=0;j=0;//resetting both to nil
 			if(t.contains("c_"))
 			{
 				if(!list.contains(t))//Isnt already present
-				{list.add(t.toLowerCase());loc=i;//Storing location of the column_name
+				{list.add(t.toLowerCase());
+				loc=i;//Storing location of the column_name
 					System.out.println("column @"+loc);
 					for(String u:s.split(" "))
 					{
@@ -76,6 +78,166 @@ public class WhereClause {
 
 
 	}
+	public void CondDist(String s) throws IOException {
+		Map<String,String> hash=new HashMap<>();
+		boolean flag=false;//True when a conditional has been satisfied
+		int distance[]=new int[20];//20 is max query length assumed
+		int max_dist=20;//Maximum distance possible
+		List<String> great = Files.readAllLines(Paths.get("Greater.txt"));
+		List<String> less = Files.readAllLines(Paths.get("Lesser.txt"));
+		List<String> equal = Files.readAllLines(Paths.get("Equals.txt"));
+		List<String> not = Files.readAllLines(Paths.get("Not.txt"));
+		String word="";//Holds word that is closest to column
+		int i=0;int k=0,loc,j=0;//K holds index of distance array.I holds the index of each word
+		int dist=0;
+
+		for(String inp:s.split(" "))
+		{
+			if (not.containsAll(Collections.singleton(inp)))
+			{
+				//Conditional word present...
+				//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+				flag=true;
+
+			}
+
+			else if (equal.containsAll(Collections.singleton(inp)))
+			{
+				//Conditional word present...
+				//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+				flag=true;
+			}
+
+			else if (less.containsAll(Collections.singleton(inp)))
+			{
+				//Conditional word present...
+				//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+				flag=true;
+			}
+
+			else if (great.containsAll(Collections.singleton(inp)))
+			{
+				//Conditional word present...
+				//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+				flag=true;
+			}//Distance has been found
+
+
+			if(flag)
+			{
+				for (String t : s.split(" ")) {
+
+					if(t.contains("c_"))
+					{
+						dist=Math.abs(i-j);
+						if(dist<max_dist)
+						{
+							word=t;
+							max_dist=dist;
+						}
+
+
+					}
+					j++;//Incrementing counter for inner loop
+				}
+				//All columns have been searched for, closest one is saved in max_dist
+				hash.put(inp,word);
+				flag=false;//Resetting
+			}
+			//int dist=Math.abs(loc-j);//Hash variable is holding the mapping
+
+			/*if (flag) {//Flag true meaning a change has happened
+				if(max_dist>dist)
+				{
+					word=inp;
+					max_dist=dist;
+				}
+
+				flag=false;//Reset
+			}*/
+
+			//j++;
+			i++;//Holds
+
+		}
+		System.out.println(hash.toString()+"\n");
+
+
+		/*
+				Use this to find closest condition to each column if NEEDED only.
+		for(String t:s.split(" "))
+		{k=0;j=0;//resetting both to nil
+			if(t.contains("c_"))
+			{
+				//Column present in the ith position...
+
+				System.out.println("For column "+t);
+				loc=i;
+				for(String inp:s.split(" "))
+				{
+					if (not.containsAll(Collections.singleton(inp)))
+					{
+						//Conditional word present...
+					//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+						flag=true;
+
+					}
+
+					else if (equal.containsAll(Collections.singleton(inp)))
+					{
+						//Conditional word present...
+					//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+						flag=true;
+					}
+
+					else if (less.containsAll(Collections.singleton(inp)))
+					{
+						//Conditional word present...
+					//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+						flag=true;
+					}
+
+					else if (great.containsAll(Collections.singleton(inp)))
+					{
+						//Conditional word present...
+					//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
+						flag=true;
+					}//Distance has been found
+					int dist=Math.abs(loc-j);//Hash variable is holding the mapping
+
+					if (flag) {//Flag true meaning a change has happened
+						if(max_dist>dist)
+						{
+							word=inp;
+							max_dist=dist;
+						}
+
+						flag=false;//Reset
+					}
+
+					j++;
+				}
+
+				hash.put(word,t);
+				//System.out.print("\n\nColumn: "+t);
+				//System.out.println(" Closest Word: "+word);
+
+					System.out.println(hash.toString()+"\n");
+				*//*
+						Only the closest distance really counts, hence only holding that
+				 *//*
+
+			}i++;
+			//Outside if condition
+
+
+		}*/
+
+
+
+	}
+
+
 
 	public String finalstring;
 	//colname->[condition]
@@ -299,7 +461,8 @@ public class WhereClause {
 		String s1=stmntgenerator(s);
 		System.out.println(s1);
 		System.out.println("\n\n\nThe distances are as follows \n");
-		Distance(s);
+		//Distance(s);
+		CondDist(s);
 		this.finalstring=s1;
 
 
