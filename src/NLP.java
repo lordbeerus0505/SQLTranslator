@@ -36,7 +36,7 @@ public class NLP {
             ArrayList<String> al4 = new ArrayList<String>();
             ArrayList<String> al5 = new ArrayList<String>();
 
-        String cust[]=new String[]{"management","technical","marketing","accounting","sales","salary","name"};
+        String cust[]=new String[]{"management","technical","marketing","accounting","sales","salary","name","yearlyincome","age"};
         al1.addAll(Arrays.asList(cust));
         m.put("customers",al1);
 

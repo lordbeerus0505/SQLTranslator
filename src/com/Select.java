@@ -136,7 +136,7 @@ public class Select {
                 res+="";
             else res+=s2.charAt(i);
         }
-       System.out.println(res + " res");
+       System.out.println(res + " <--result");
     this.finalstring=res+" ";
 
     }

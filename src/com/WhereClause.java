@@ -81,7 +81,7 @@ public class WhereClause {
 	public void CondDist(String s) throws IOException {
 		Map<String,String> hash=new HashMap<>();
 		boolean flag=false;//True when a conditional has been satisfied
-		int distance[]=new int[20];//20 is max query length assumed
+		int distance[]=new int[30];//20 is max query length assumed
 		int max_dist=20;//Maximum distance possible
 		List<String> great = Files.readAllLines(Paths.get("Greater.txt"));
 		List<String> less = Files.readAllLines(Paths.get("Lesser.txt"));
@@ -92,7 +92,7 @@ public class WhereClause {
 		int dist=0;
 
 		for(String inp:s.split(" "))
-		{
+		{//For every conditional word
 			if (not.containsAll(Collections.singleton(inp)))
 			{
 				//Conditional word present...
@@ -121,25 +121,31 @@ public class WhereClause {
 				//	System.out.println("Distance of "+inp+" from "+t+" is "+Math.abs(loc-j));
 				flag=true;
 			}//Distance has been found
-
+			//System.out.println(s);
 
 			if(flag)
 			{
 				for (String t : s.split(" ")) {
-
+				//for each column present
 					if(t.contains("c_"))
-					{
+					{System.out.println(t+"i="+i+" j="+j);
+						System.out.println(word);
 						dist=Math.abs(i-j);
 						if(dist<max_dist)
 						{
 							word=t;
+
 							max_dist=dist;
+						//	System.out.println(max_dist+" max dist");
 						}
 
 
 					}
 					j++;//Incrementing counter for inner loop
 				}
+				//resetting values...
+				j=0;
+				max_dist=100;
 				//All columns have been searched for, closest one is saved in max_dist
 				hash.put(inp,word);
 				flag=false;//Resetting
@@ -388,7 +394,7 @@ public class WhereClause {
 		System.out.println(s2);
 		res =conditions(s2);
 		res="WHERE "+res;
-		res=process(res);
+	//	res=process(res); TODO: Process needs to be checked
 		return res;
 	}
 
@@ -420,7 +426,7 @@ public class WhereClause {
 				flag=false;
 				continue;
 			}
-			if (inp.equalsIgnoreCase("than") || inp.equalsIgnoreCase("to")) {
+			if (inp.equalsIgnoreCase("than") || inp.equalsIgnoreCase("to")||inp.equalsIgnoreCase("have")||inp.equalsIgnoreCase("a")) {
 				//skip all meaningless word in the relation part
 				continue;
 			} else if (not.containsAll(Collections.singleton(inp))) {
@@ -449,7 +455,7 @@ public class WhereClause {
 			}
 
 		}
-		System.out.println(value+" is value");
+		System.out.println(value+" <--where result");
 
 		//Return the symbol that was converted.
 		return value;

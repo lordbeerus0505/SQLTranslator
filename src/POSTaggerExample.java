@@ -46,7 +46,7 @@ public class POSTaggerExample
 
 
         try {           
-        	sentence="show salary of customers where salary greater than 10000 and less than 20000";
+        	sentence="show all customers whose age greater than 40 and have a yearlyincome above 10000 ";
             tokenModelIn = new FileInputStream("en-token.bin");
             TokenizerModel tokenModel = new TokenizerModel(tokenModelIn);
             Tokenizer tokenizer = new TokenizerME(tokenModel);
